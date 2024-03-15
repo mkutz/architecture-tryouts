@@ -1,1 +1,11 @@
-spring.application.name=hexagon
+spring:
+  application:
+    name: hexagon
+  datasource:
+    url: jdbc:postgresql://localhost:5432/unicorn-service
+    username: architecture-service
+    password: d4nc31ng0nR41nb0w5
+    driverClassName: org.postgresql.Driver
+  sql:
+    init:
+      mode: always
