@@ -1,2 +1,7 @@
-# architecture-tryouts
-Experiemnts fof different architectures.
+# Architecture Tryouts
+
+Experiments to compare different architecture approaches:
+
+
+## [Hexagonal Architecture](hexagonal)
+
