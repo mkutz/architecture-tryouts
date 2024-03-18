@@ -1,0 +1,26 @@
+name: Build Layered
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - layered/**
+  push:
+    branches:
+      - main
+    paths:
+      - layered/**
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-java@v4
+      with:
+        java-version: 21
+        distribution: temurin
+    - uses: gradle/actions/setup-gradle@v3
+    - run: ./gradlew :layered:build

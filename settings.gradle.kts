@@ -1,3 +1,3 @@
 rootProject.name = "architecture-tryouts"
 
-include("hexagonal")
+include("layered")
