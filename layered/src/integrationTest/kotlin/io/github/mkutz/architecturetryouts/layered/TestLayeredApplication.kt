@@ -14,7 +14,10 @@ import org.testcontainers.utility.DockerImageName.parse
 @Testcontainers
 class TestLayeredApplication {
 
-  @Bean @ServiceConnection fun postgreSQLContainer() = PostgreSQLContainer(parse("postgres:13.3"))
+  @Bean
+  @ServiceConnection
+  fun postgreSQLContainer() =
+    PostgreSQLContainer(parse("postgres:16").asCompatibleSubstituteFor("postgres"))
 
   @Bean
   @ServiceConnection
