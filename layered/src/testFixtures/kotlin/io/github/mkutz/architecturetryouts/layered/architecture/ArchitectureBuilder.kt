@@ -39,5 +39,5 @@ data class ArchitectureBuilder(
       updated = updated
     )
 
-  fun buildEntity(): ArchitectureEntity = ArchitectureEntity(this.build())
+  fun buildEntity(): ArchitectureEntity = ArchitectureEntity(build())
 }

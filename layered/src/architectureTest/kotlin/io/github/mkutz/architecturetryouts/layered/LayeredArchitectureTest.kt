@@ -4,13 +4,14 @@ import com.tngtech.archunit.base.DescribedPredicate.or
 import com.tngtech.archunit.core.domain.JavaClass.Predicates.simpleNameEndingWith
 import com.tngtech.archunit.junit.AnalyzeClasses
 import com.tngtech.archunit.junit.ArchTest
+import com.tngtech.archunit.library.Architectures
 import com.tngtech.archunit.library.Architectures.layeredArchitecture
 
 @AnalyzeClasses(packagesOf = [LayeredArchitectureTest::class])
 class LayeredArchitectureTest {
 
   @ArchTest
-  val layeredArchitecture =
+  val layeredArchitecture: Architectures.LayeredArchitecture =
     layeredArchitecture()
       .consideringOnlyDependenciesInLayers()
       .layer("Controllers")

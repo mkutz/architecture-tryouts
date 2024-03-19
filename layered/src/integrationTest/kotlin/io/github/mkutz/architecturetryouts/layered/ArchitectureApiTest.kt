@@ -1,18 +1,14 @@
 package io.github.mkutz.architecturetryouts.layered
 
-import com.fasterxml.jackson.databind.json.JsonMapper
 import io.github.mkutz.architecturetryouts.layered.architecture.ArchitectureBuilder
 import io.github.mkutz.architecturetryouts.layered.architecture.ArchitectureRepository
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
-import org.springframework.boot.test.web.client.TestRestTemplate
-import org.springframework.boot.test.web.client.getForEntity
-import org.springframework.http.HttpStatus
+import org.springframework.test.web.reactive.server.WebTestClient
 
 @SpringBootTest(
   webEnvironment = WebEnvironment.RANDOM_PORT,
@@ -22,42 +18,94 @@ class ArchitectureApiTest {
 
   @Value("http://localhost:\${local.server.port}") lateinit var baseUrl: String
 
-  @Autowired lateinit var restTemplate: TestRestTemplate
+  @Autowired lateinit var webClient: WebTestClient
   @Autowired lateinit var architectureRepository: ArchitectureRepository
-
-  val jsonMapper: JsonMapper = JsonMapper.builder().build()
 
   @Test
   @DisplayName("GET /architectures/")
   fun getAll() {
-    architectureRepository.save(ArchitectureBuilder().buildEntity())
+    val entity = architectureRepository.save(ArchitectureBuilder().buildEntity())
 
-    val response = restTemplate.getForEntity<String>("$baseUrl/architectures/")
+    val response = webClient.get().uri("$baseUrl/architectures/").exchange()
 
-    assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
-    assertThat(jsonMapper.readValue(response.body, List::class.java)).hasSize(1)
+    response.expectStatus().isOk().expectBody().jsonPath("$[0].id").isEqualTo("${entity.id}")
   }
 
   @Test
   @DisplayName("GET /architectures/:id")
   fun getOne() {
-    val architecture = architectureRepository.save(ArchitectureBuilder().buildEntity())
+    val entity = architectureRepository.save(ArchitectureBuilder().buildEntity())
 
-    val response = restTemplate.getForEntity<String>("$baseUrl/architectures/${architecture.id}")
+    val response = webClient.get().uri("$baseUrl/architectures/${entity.id}").exchange()
 
-    assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
+    response.expectAll(
+      { it.expectStatus().isOk() },
+      { it.expectBody().jsonPath("$.id").isEqualTo("${entity.id}") }
+    )
   }
 
   @Test
   @DisplayName("POST /architectures/")
   fun post() {
     val response =
-      restTemplate.postForEntity(
-        "$baseUrl/architectures/",
-        """{"name":"Layered","notes":"Simple layered"}""",
-        String::class.java
-      )
+      webClient
+        .post()
+        .uri("$baseUrl/architectures/")
+        .header("Content-Type", "application/json")
+        .bodyValue("""{"name":"Layered","notes":"Simple layered"}""")
+        .exchange()
 
-    assertThat(response.statusCode).isEqualTo(HttpStatus.CREATED)
+    response.expectAll(
+      { it.expectStatus().isCreated() },
+      { it.expectHeader().valueMatches("Location", "$baseUrl/architectures/.+") }
+    )
+  }
+
+  @Test
+  @DisplayName("POST /architectures/ invalid")
+  fun postInvalid() {
+    val response =
+      webClient
+        .post()
+        .uri("$baseUrl/architectures/")
+        .header("Content-Type", "application/json")
+        .bodyValue("""{"name":"","pros":"Simple\nlayered"}""")
+        .exchange()
+
+    response.expectAll(
+      { it.expectStatus().isBadRequest() },
+      { it.expectHeader().doesNotExist("Location") },
+      { it.expectBody().jsonPath("title", "Bad Request") },
+      { it.expectBody().jsonPath("detail", "Invalid request content.") },
+      { it.expectBody().jsonPath("status", "400") }
+    )
+  }
+
+  @Test
+  @DisplayName("PUT /architectures/:id")
+  fun put() {
+    val entity = architectureRepository.save(ArchitectureBuilder().buildEntity())
+
+    val response =
+      webClient
+        .put()
+        .uri("$baseUrl/architectures/${entity.id}")
+        .header("Content-Type", "application/json")
+        .bodyValue(
+          """{"name":"Layered","notes":"Simple layered","pros":["Few concepts","Lightweight"]}"""
+        )
+        .exchange()
+
+    response.expectAll({ it.expectStatus().isOk() }) // TODO check more
+  }
+
+  @Test
+  @DisplayName("DELETE /architectures/:id")
+  fun delete() {
+    val entity = architectureRepository.save(ArchitectureBuilder().buildEntity())
+
+    val response = webClient.delete().uri("$baseUrl/architectures/${entity.id}").exchange()
+
+    response.expectAll({ it.expectStatus().isOk() })
   }
 }

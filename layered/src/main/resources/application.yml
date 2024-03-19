@@ -1,8 +1,8 @@
 spring:
   application:
-    name: hexagon
+    name: layered
   datasource:
-    url: jdbc:postgresql://localhost:5432/unicorn-service
+    url: jdbc:postgresql://localhost:5432/architecture-service
     username: architecture-service
     password: d4nc31ng0nR41nb0w5
     driverClassName: org.postgresql.Driver

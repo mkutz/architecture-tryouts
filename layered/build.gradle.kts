@@ -11,17 +11,13 @@ plugins {
   `java-test-fixtures`
 }
 
-group = "io.github.mkutz.architecturetryouts"
-
-version = "0.0.1-SNAPSHOT"
-
 java { sourceCompatibility = JavaVersion.VERSION_21 }
 
 repositories { mavenCentral() }
 
 dependencies {
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-  implementation("org.springframework.boot:spring-boot-starter-web")
+  implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-validation")
   implementation("org.springframework.kafka:spring-kafka")
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -59,7 +55,7 @@ testing {
         implementation(project())
         implementation(testFixtures(project()))
         implementation("org.springframework.boot:spring-boot-starter-test")
-        implementation("org.springframework.boot:spring-boot-starter-web")
+        implementation("org.springframework.boot:spring-boot-starter-webflux")
         implementation("org.springframework.boot:spring-boot-starter-data-jpa")
         implementation("org.springframework.boot:spring-boot-testcontainers")
         implementation("org.testcontainers:junit-jupiter")
