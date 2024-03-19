@@ -16,11 +16,27 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+
+    permissions:
+      checks: write
+      pull-requests: write
+      contents: write
+
     steps:
+
     - uses: actions/checkout@v4
+
     - uses: actions/setup-java@v4
       with:
         java-version: 21
         distribution: temurin
+
     - uses: gradle/actions/setup-gradle@v3
+
     - run: ./gradlew :layered:build
+
+    - name: Auto merge for Dependabot PRs
+      run: gh pr merge --auto --rebase --delete-branch "${{ github.event.pull_request.html_url }}"
+      if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
