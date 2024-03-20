@@ -6,12 +6,8 @@ import java.util.*
 class ArchitectureRepositoryStub :
   CrudRepositoryStub<ArchitectureEntity, UUID>(), ArchitectureRepository {
 
-  override fun <S : ArchitectureEntity?> save(entity: S & Any): S & Any {
-    return entity.also { data[it.id] = it }
-  }
+  override fun <S : ArchitectureEntity?> save(entity: S & Any) = entity.also { data[it.id] = it }
 
-  override fun <S : ArchitectureEntity> saveAll(entities: Iterable<S>): Iterable<S> {
-    data.putAll(entities.associateBy { it.id })
-    return entities
-  }
+  override fun <S : ArchitectureEntity> saveAll(entities: Iterable<S>) =
+    entities.also { entities.forEach { data[it.id] = it } }
 }

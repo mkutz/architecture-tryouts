@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
 import org.springframework.test.web.reactive.server.WebTestClient
+import java.util.*
 
 @SpringBootTest(
   webEnvironment = WebEnvironment.RANDOM_PORT,
@@ -105,6 +106,14 @@ class ArchitectureApiTest {
     val entity = architectureRepository.save(ArchitectureBuilder().buildEntity())
 
     val response = webClient.delete().uri("$baseUrl/architectures/${entity.id}").exchange()
+
+    response.expectStatus().isOk()
+  }
+  
+  @Test
+  @DisplayName("DELETE /architectures/:id unknown")
+  fun deleteUnknown() {
+    val response = webClient.delete().uri("$baseUrl/architectures/${UUID.randomUUID()}").exchange()
 
     response.expectAll({ it.expectStatus().isOk() })
   }

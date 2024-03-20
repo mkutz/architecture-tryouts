@@ -13,15 +13,15 @@ CREATE
 
 CREATE
     TABLE
-        IF NOT EXISTS architectures_ratings(
+        IF NOT EXISTS ratings(
             id uuid NOT NULL,
             architecture_id uuid NOT NULL,
             user_id uuid NOT NULL,
-            rating INT NOT NULL,
+            stars INT NOT NULL,
             comment VARCHAR,
             PRIMARY KEY(id)
         );
 
 CREATE
     INDEX IF NOT EXISTS architectures_ratings_architecture_id ON
-    architectures_ratings(architecture_id);
+    ratings(architecture_id);

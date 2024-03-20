@@ -2,7 +2,7 @@ package io.github.mkutz.architecturetryouts.layered.architecture
 
 import java.time.format.DateTimeFormatter
 
-data class ArchitectureDto(
+data class ArchitectureMessage(
   val id: String,
   val name: String,
   val notes: String,
@@ -11,7 +11,6 @@ data class ArchitectureDto(
   val created: String,
   val updated: String?
 ) {
-  
   constructor(
     bo: Architecture
   ) : this(

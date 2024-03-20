@@ -12,6 +12,7 @@ data class Architecture(
   val created: Instant = Instant.now(),
   val updated: Instant? = created
 ) {
+
   constructor(
     entity: ArchitectureEntity
   ) : this(
