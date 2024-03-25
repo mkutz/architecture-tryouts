@@ -32,7 +32,7 @@ testing {
       dependencies {
         implementation("org.junit.jupiter:junit-jupiter-api")
         implementation("org.assertj:assertj-core")
-        val approvaltestsVersion = "22.3.3"
+        val approvaltestsVersion = "23.0.0"
         implementation("com.approvaltests:approvaltests:$approvaltestsVersion")
       }
     }
