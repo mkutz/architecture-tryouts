@@ -1,6 +1,17 @@
-plugins { id("com.diffplug.spotless") version "6.25.0" }
+plugins {
+  id("com.diffplug.spotless") version "6.25.0"
+  id("org.sonarqube") version "4.4.1.3373"
+}
 
 repositories { mavenCentral() }
+
+sonar {
+  properties {
+    property("sonar.projectKey", "mkutz_architecture-tryouts")
+    property("sonar.organization", "mkutz")
+    property("sonar.host.url", "https://sonarcloud.io")
+  }
+}
 
 spotless {
   format("misc") {
