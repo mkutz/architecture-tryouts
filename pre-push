@@ -1,17 +1,12 @@
-#!/bin/bash
+#!/bin/sh
 
-current_branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
-protected_branches=( master main )
+staged_files=$(git diff --staged --name-only)
 
-for protected_branch in "${protected_branches[@]}"; do
-  if [[ $protected_branch == "$current_branch" ]]; then
-    echo "⚠️ Pushing to protected branch ${current_branch} ⚠️"
-    echo 'Running checks…'
-
-    if [ "$(./gradlew check)" -ne 0 ]; then
-      echo '…💥 checks failed. Aborting push.'
-      exit 1
-    fi
+echo "🧹 Formatting code in staged files…"
+./gradlew spotlessApply
+for file in $staged_files; do
+  if test -f "$file"; then
+    git add "$file"
   fi
 done
 

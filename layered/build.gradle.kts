@@ -48,6 +48,7 @@ testing {
         val archunitVersion = "1.2.1"
         implementation("com.tngtech.archunit:archunit-junit5:$archunitVersion")
       }
+      targets { all { testTask.configure { shouldRunAfter(test) } } }
     }
 
     register<JvmTestSuite>("integrationTest") {
@@ -66,6 +67,10 @@ testing {
       targets { all { testTask.configure { shouldRunAfter(test) } } }
     }
   }
+}
+
+tasks.check {
+  dependsOn(testing.suites.named("architectureTest"), testing.suites.named("integrationTest"))
 }
 
 tasks.withType<KotlinCompile> {
