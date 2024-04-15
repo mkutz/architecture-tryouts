@@ -45,7 +45,7 @@ testing {
     register<JvmTestSuite>("architectureTest") {
       dependencies {
         implementation(project())
-        val archunitVersion = "1.2.1"
+        val archunitVersion = "1.3.0"
         implementation("com.tngtech.archunit:archunit-junit5:$archunitVersion")
       }
       targets { all { testTask.configure { shouldRunAfter(test) } } }
